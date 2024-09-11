@@ -8,29 +8,39 @@
 </head>
 
 <body>
-    <p>選擇計算日期:</p>
-    <label for="start-date">開始</label>
+    <h1>充電樁計算</h1>
+    <hr>
+
+    <h3><label for="charger-number">輸入充電樁編號:</label></h3>
+    <input type="text" id="charger-number">
+    <br>
+
+    <h3><label for="start-date">選擇計算日期:</label></h3>
+    <label for="start-date">開始:</label>
     <input type="date" id="start-date" name="start-date">
-
-    <label for="end-date">結束</label>
+    <label for="end-date">結束:</label>
     <input type="date" id="end-date" name="end-date">
-
-    <input type="button" value="計算" onclick="main()">
     <br><br>
-    <p>充電樁使用總時數: <span id="total-hours"></span> hr</p>
-    <p>稼動率: <span id="operating-rate"></span> %</p>
+    <input type="button" value="計算" onclick="main()">
+    <hr>
+    <br>
+    <br>
+
+    <h3>充電樁使用總時數: <span id="total-hours"></span> hr</h3>
+    <h3>稼動率: <span id="operating-rate"></span> %</h3>
 
     <script>
         async function main() {
+            const chargerNumber = document.getElementById('charger-number').value;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
 
-            if (!startDate || !endDate) {
-                alert("請選擇計算日期");
+            if (!startDate || !endDate || !chargerNumber) {
+                alert("請輸入充電樁編號、計算日期");
                 return;
             }
 
-            console.log("Sending request with startDate:", startDate, "and endDate:", endDate);
+            console.log("Sending request with chargerNumber:", chargerNumber, "startDate:", startDate, "and endDate:", endDate);
 
             try {
                 const response = await fetch('http://localhost:3000/fetch-data', {
@@ -38,7 +48,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ startDate, endDate })
+                    body: JSON.stringify({ startDate, endDate, chargerNumber })
                 });
 
                 console.log("Response status:", response.status);

@@ -28,12 +28,12 @@ app.post("/fetch-data", async (req, res) => {
   console.log("Received POST request at /fetch-data");
   console.log("Request body:", req.body);
 
-  const { startDate, endDate } = req.body; // 從請求中取得日期
+  const { startDate, endDate, chargerNumber } = req.body; // 從請求中取得日期和充電樁編號
 
   try {
     const yearMonth = startDate.slice(0, 7).replace("-", "");
     const daysDifference = calculateDaysDifference(startDate, endDate); // 計算天數
-    const data = await fetchData(startDate, endDate, yearMonth);
+    const data = await fetchData(startDate, endDate, yearMonth, chargerNumber);
     const totalHours = calculateTotalHours(data);
     const operatingRate = ((totalHours / (24 * daysDifference)) * 100).toFixed(
       2
@@ -59,9 +59,9 @@ function calculateDaysDifference(startDate, endDate) {
   return differenceInDays;
 }
 
-async function fetchData(startDate, endDate, yearMonth) {
+async function fetchData(startDate, endDate, yearMonth, chargerNumber) {
   console.log(
-    `Fetching data with startDate: ${startDate}, endDate: ${endDate}, yearMonth: ${yearMonth}`
+    `Fetching data with startDate: ${startDate}, endDate: ${endDate}, yearMonth: ${yearMonth}, chargerNumber: ${chargerNumber}`
   );
 
   const postData = JSON.stringify({
@@ -70,7 +70,7 @@ async function fetchData(startDate, endDate, yearMonth) {
         must: [
           {
             term: {
-              "keyword_charger_name.keyword": "13-1",
+              "keyword_charger_name.keyword": chargerNumber, // 動態插入充電樁編號
             },
           },
           {
