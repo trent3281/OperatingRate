@@ -1,5 +1,5 @@
-const https = require('https');
-const { URL } = require('url');
+const https = require("https");
+const { URL } = require("url");
 
 // 設置忽略憑證驗證的選項
 const agent = new https.Agent({ rejectUnauthorized: false });
@@ -7,46 +7,47 @@ const agent = new https.Agent({ rejectUnauthorized: false });
 function fetchData() {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
-      "query": {
-        "bool": {
-          "must": [
+      query: {
+        bool: {
+          must: [
             {
-              "term": {
-                "keyword_charger_name.keyword": "13-1"
-              }
+              term: {
+                "keyword_charger_name.keyword": "13-1",
+              },
             },
             {
-              "term": {
-                "datetime_time": "2024-09-11"
-              }
-            }
-          ]
-        }
+              term: {
+                datetime_time: "2024-09-11",
+              },
+            },
+          ],
+        },
       },
-      "size": 1000
+      size: 1000,
     });
 
     const options = {
-      hostname: 'neopower.com.tw',
+      hostname: "neopower.com.tw",
       port: 9200,
-      path: '/np01-charginginfo-202409/_search',
-      method: 'POST',
+      path: "/np01-charginginfo-202409/_search",
+      method: "POST",
       headers: {
-        'Authorization': 'Basic ' + Buffer.from('elastic:neopower83515567').toString('base64'),
-        'Content-Type': 'application/json',
-        'Content-Length': postData.length
+        Authorization:
+          "Basic " + Buffer.from("elastic:neopower83515567").toString("base64"),
+        "Content-Type": "application/json",
+        "Content-Length": postData.length,
       },
-      agent: agent // 使用忽略憑證驗證的代理
+      agent: agent, // 使用忽略憑證驗證的代理
     };
 
     const req = https.request(options, (res) => {
-      let data = '';
+      let data = "";
 
-      res.on('data', (chunk) => {
+      res.on("data", (chunk) => {
         data += chunk;
       });
 
-      res.on('end', () => {
+      res.on("end", () => {
         try {
           const parsedData = JSON.parse(data);
           resolve(parsedData);
@@ -56,7 +57,7 @@ function fetchData() {
       });
     });
 
-    req.on('error', (error) => {
+    req.on("error", (error) => {
       reject(error);
     });
 
@@ -72,7 +73,7 @@ function calculateTotalHours(data) {
 
   // 將資料依據 keyword_license_plate 分組
   const groupedData = {};
-  items.forEach(item => {
+  items.forEach((item) => {
     const plate = item._source.keyword_license_plate;
     if (!groupedData[plate]) {
       groupedData[plate] = [];
@@ -106,15 +107,15 @@ async function main() {
   try {
     const data = await fetchData();
     const totalHours = calculateTotalHours(data);
-    console.log(`Total times: ${(totalHours).toFixed(2)} hr`);
-    console.log(`Operating Rate: ${(((totalHours ) / (24*30)) * 100).toFixed(2)} %`);
+    console.log(`Total times: ${totalHours.toFixed(2)} hr`);
+    console.log(
+      `Operating Rate: ${((totalHours / (24 * 1)) * 100).toFixed(2)} %`
+    );
 
     // 檢查資料內容
     // console.log(JSON.stringify(data, null, 2));
-
-
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
   }
 }
 

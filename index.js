@@ -28,12 +28,18 @@ app.post("/fetch-data", async (req, res) => {
   console.log("Received POST request at /fetch-data");
   console.log("Request body:", req.body);
 
-  const { startDate, endDate, chargerNumber } = req.body; // 從請求中取得日期和充電樁編號
+  const { startDate, endDate, chargerNumber, placeNumber } = req.body; // 從請求中取得日期、充電樁編號和場域編號
 
   try {
     const yearMonth = startDate.slice(0, 7).replace("-", "");
     const daysDifference = calculateDaysDifference(startDate, endDate); // 計算天數
-    const data = await fetchData(startDate, endDate, yearMonth, chargerNumber);
+    const data = await fetchData(
+      startDate,
+      endDate,
+      yearMonth,
+      chargerNumber,
+      placeNumber
+    );
     const totalHours = calculateTotalHours(data);
     const operatingRate = ((totalHours / (24 * daysDifference)) * 100).toFixed(
       2
@@ -59,9 +65,16 @@ function calculateDaysDifference(startDate, endDate) {
   return differenceInDays;
 }
 
-async function fetchData(startDate, endDate, yearMonth, chargerNumber) {
+// 從 Elasticsearch 取得資料
+async function fetchData(
+  startDate,
+  endDate,
+  yearMonth,
+  chargerNumber,
+  placeNumber
+) {
   console.log(
-    `Fetching data with startDate: ${startDate}, endDate: ${endDate}, yearMonth: ${yearMonth}, chargerNumber: ${chargerNumber}`
+    `Fetching data with startDate: ${startDate}, endDate: ${endDate}, yearMonth: ${yearMonth}, chargerNumber: ${chargerNumber}, placeNumber: ${placeNumber}`
   );
 
   const postData = JSON.stringify({
@@ -90,7 +103,7 @@ async function fetchData(startDate, endDate, yearMonth, chargerNumber) {
   const options = {
     hostname: "neopower.com.tw",
     port: 9200,
-    path: `/np01-charginginfo-${yearMonth}/_search`,
+    path: `/np${placeNumber}-charginginfo-${yearMonth}/_search`, // 使用 placeNumber 動態構建路徑
     method: "POST",
     headers: {
       Authorization:

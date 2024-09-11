@@ -4,12 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>充電樁計算</title>
 </head>
 
 <body>
     <h1>充電樁計算</h1>
     <hr>
+
+    <h3><label for="place-number">輸入場域編號:</label></h3>
+    <input type="text" id="place-number">
+    <br>
 
     <h3><label for="charger-number">輸入充電樁編號:</label></h3>
     <input type="text" id="charger-number">
@@ -31,16 +35,17 @@
 
     <script>
         async function main() {
+            const placeNumber = document.getElementById('place-number').value;
             const chargerNumber = document.getElementById('charger-number').value;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
 
-            if (!startDate || !endDate || !chargerNumber) {
-                alert("請輸入充電樁編號、計算日期");
+            if (!placeNumber || !chargerNumber || !startDate || !endDate) {
+                alert("請輸入場域編號、充電樁編號、計算日期");
                 return;
             }
 
-            console.log("Sending request with chargerNumber:", chargerNumber, "startDate:", startDate, "and endDate:", endDate);
+            console.log("Sending request with placeNumber:", placeNumber, "chargerNumber:", chargerNumber, "startDate:", startDate, "and endDate:", endDate);
 
             try {
                 const response = await fetch('http://localhost:3000/fetch-data', {
@@ -48,7 +53,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ startDate, endDate, chargerNumber })
+                    body: JSON.stringify({ placeNumber, startDate, endDate, chargerNumber })
                 });
 
                 console.log("Response status:", response.status);
@@ -70,6 +75,7 @@
             }
         }
     </script>
+
 </body>
 
 </html>
