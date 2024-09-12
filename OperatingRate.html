@@ -13,6 +13,7 @@
 
     <h3><label for="place-number">輸入場域編號:</label></h3>
     <input type="text" id="place-number">
+    <p>目前有01、04、007、010 (03資料不完整無法查詢)</p>
     <br>
 
     <h3><label for="charger-number">輸入充電樁編號:</label></h3>
@@ -35,7 +36,10 @@
         <h3>充電樁使用總時數: <span id="total-hours"></span> hr</h3>
         <h3>稼動率: <span id="operating-rate"></span> %</h3>
     </div>
-    <div id="no-data" style="display: none;"><h3>找不到資料</h3> <p>請確認場域編號與對應充電樁編號正確</p></div>
+    <div id="no-data" style="display: none;">
+        <h3>找不到資料</h3>
+        <p>請確認場域編號與對應充電樁編號正確</p>
+    </div>
 
     <script>
         async function main() {
