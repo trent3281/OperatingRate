@@ -30,8 +30,12 @@
     <br>
     <br>
 
-    <h3>充電樁使用總時數: <span id="total-hours"></span> hr</h3>
-    <h3>稼動率: <span id="operating-rate"></span> %</h3>
+    <!-- 預設隱藏，根據數據顯示 -->
+    <div id="result">
+        <h3>充電樁使用總時數: <span id="total-hours"></span> hr</h3>
+        <h3>稼動率: <span id="operating-rate"></span> %</h3>
+    </div>
+    <div id="no-data" style="display: none;"><h3>找不到資料</h3> <p>請確認場域編號與對應充電樁編號正確</p></div>
 
     <script>
         async function main() {
@@ -65,13 +69,21 @@
                 const result = await response.json();
                 console.log("Response JSON:", result);
 
-                const totalHours = result.totalHours || '無數據';
-                const operatingRate = result.operatingRate || '無數據';
-
-                document.getElementById('total-hours').textContent = totalHours;
-                document.getElementById('operating-rate').textContent = operatingRate;
+                if (result.totalHours !== undefined && result.operatingRate !== undefined) {
+                    // 如果有數據，顯示結果，隱藏"找不到資料"
+                    document.getElementById('total-hours').textContent = result.totalHours;
+                    document.getElementById('operating-rate').textContent = result.operatingRate;
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('no-data').style.display = 'none';
+                } else {
+                    // 如果沒有數據，顯示"找不到資料"，隱藏結果
+                    document.getElementById('result').style.display = 'none';
+                    document.getElementById('no-data').style.display = 'block';
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('no-data').style.display = 'block';
             }
         }
     </script>
