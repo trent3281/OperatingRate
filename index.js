@@ -9,15 +9,7 @@ const port = 3000;
 const agent = new https.Agent({ rejectUnauthorized: false });
 
 // 正確地設置 CORS 中間件
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5500", // 根據您的前端開發伺服器地址
-    methods: "GET,POST,OPTIONS", // 允許的 HTTP 方法
-    allowedHeaders: "Content-Type, Authorization", // 允許的標頭
-    credentials: true, // 如果需要傳遞 Cookie，設置此選項為 true
-  })
-);
-
+app.use(cors());
 app.use(express.json());
 
 // 處理 OPTIONS 預檢請求
